@@ -11,9 +11,9 @@ This repository contains hands-on Linux administration labs demonstrating core s
 To create and manage user accounts in a Linux environment.
 
 ## Commands Executed
+## 📌 Lab 1: User Management
 
 ### Create a New User
-```bash
 sudo useradd -m riya
 
 # Set User Password
