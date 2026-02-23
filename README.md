@@ -7,8 +7,6 @@ This repository contains hands-on Linux administration labs demonstrating core s
 
 ---
 
-# 📌 Lab 1: User Management
-
 ## Objective
 To create and manage user accounts in a Linux environment.
 
