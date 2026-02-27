@@ -1,0 +1,128 @@
+# SSH, Package Management, Scheduling & systemd
+
+Lab 1 – SSH Key Setup
+🎯 Objective
+
+Setup SSH key-based authentication and disable password login.
+
+Step 1: Generate SSH Key
+
+Run the following command on your local machine:
+
+ssh-keygen
+
+Press Enter to accept default location.
+
+Key will be generated inside:
+
+~/.ssh/id_rsa
+~/.ssh/id_rsa.pub
+Step 2: Copy Public Key to Remote Server
+ssh-copy-id username@remote_server_ip
+
+Example:
+
+ssh-copy-id ubuntu@192.168.1.10
+Step 3: Disable Password Login
+
+Open SSH configuration file on remote server:
+
+sudo nano /etc/ssh/sshd_config
+
+Find and change:
+
+PasswordAuthentication no
+
+Restart SSH service:
+
+sudo systemctl restart sshd
+Step 4: Test Login
+
+Now try login:
+
+ssh username@remote_server_ip
+
+You should login without password.
+
+⏰ Lab 2 – Cron Job
+🎯 Objective
+
+Run a command every 5 minutes using cron.
+
+Step 1: Edit Crontab
+crontab -e
+Step 2: Add Below Line
+*/5 * * * * echo "Test" >> /tmp/test.log1
+Step 3: Verify Cron Job
+
+Wait 5 minutes and check:
+
+cat /tmp/test.log1
+
+You should see:
+
+Test
+Test
+⚙️ Lab 3 – systemd Timer
+🎯 Objective
+
+Create a systemd timer to run a script automatically.
+
+Step 1: Create Script
+sudo nano /usr/local/bin/systemd_script.sh
+
+Add:
+
+#!/bin/bash
+echo "Hello Systemd" >> /tmp/systemd.log1
+
+Make it executable:
+
+sudo chmod +x /usr/local/bin/systemd_script.sh
+Step 2: Create Service File
+sudo nano /etc/systemd/system/systemd-test.service
+
+Add:
+
+[Unit]
+Description=Simple Systemd Test Service
+
+[Service]
+ExecStart=/usr/local/bin/systemd_script.sh
+Step 3: Create Timer File
+sudo nano /etc/systemd/system/systemd-test.timer
+
+Add:
+
+[Unit]
+Description=Run Systemd Test Every 5 Minutes
+
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=5min
+Unit=systemd-test.service
+
+[Install]
+WantedBy=timers.target
+Step 4: Enable and Start Timer
+
+Reload systemd:
+
+sudo systemctl daemon-reload
+
+Enable timer:
+
+sudo systemctl enable systemd-test.timer
+
+Start timer:
+
+sudo systemctl start systemd-test.timer
+Step 5: Verify Timer
+
+Check timer status:
+
+systemctl list-timers
+
+Check log output:
+
+cat /tmp/systemd.log1
